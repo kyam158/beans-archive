@@ -1,1 +1,162 @@
-<!DOCTYPE html><html lang='ja'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Bean Archive</title><link rel='stylesheet' href='style.css'></head><body><header class='header'><h1>Bean Archive</h1><p>Every bean has a story.</p></header><div class='toolbar'><input id='search' placeholder='Search beans'><button id='add'>＋ New Bean</button></div><div id='cards'></div><dialog id='dlg'><form id='form'><h2>New Bean</h2><input id='name' placeholder='Bean Name' required><input id='country' placeholder='Country'><input id='region' placeholder='Region'><input id='process' placeholder='Process'><div class='row'><button type='button' id='cancel'>Cancel</button><button type='submit'>Save</button></div></form></dialog><script src='script.js'></script></body></html>
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f3ec">
+    <title>Bean Archive</title>
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">Coffee Encyclopedia</p>
+        <h1>Bean Archive</h1>
+        <p class="lead">コーヒー豆の産地、味わい、レシピまで静かに残す図鑑。</p>
+      </div>
+      <button class="primary-button" id="addBeanButton" type="button">豆を追加</button>
+    </header>
+
+    <main class="app-shell">
+      <section class="summary-panel" aria-label="アーカイブ概要">
+        <div>
+          <span class="summary-number" id="beanCount">0</span>
+          <span class="summary-label">登録豆数</span>
+        </div>
+        <div>
+          <span class="summary-number" id="countryCount">0</span>
+          <span class="summary-label">生産国</span>
+        </div>
+        <div>
+          <span class="summary-number" id="tagCount">0</span>
+          <span class="summary-label">フレーバータグ</span>
+        </div>
+      </section>
+
+      <section class="controls" aria-label="検索">
+        <label class="search-field" for="searchInput">
+          <span>検索</span>
+          <input id="searchInput" type="search" placeholder="豆名、国、農園、タグで検索">
+        </label>
+      </section>
+
+      <section>
+        <div class="section-heading">
+          <h2>コーヒー豆一覧</h2>
+          <p id="resultCount">0件</p>
+        </div>
+        <div class="bean-grid" id="beanList"></div>
+      </section>
+    </main>
+
+    <dialog class="bean-dialog" id="beanDialog">
+      <form id="beanForm" method="dialog">
+        <div class="dialog-header">
+          <div>
+            <p class="eyebrow">Bean Profile</p>
+            <h2 id="dialogTitle">豆を追加</h2>
+          </div>
+          <button class="icon-button" id="closeDialogButton" type="button" aria-label="閉じる">×</button>
+        </div>
+
+        <input id="beanId" name="beanId" type="hidden">
+
+        <div class="form-grid">
+          <label>
+            豆名
+            <input id="name" name="name" required placeholder="例: エチオピア イルガチェフェ">
+          </label>
+          <label>
+            国
+            <input id="country" name="country" placeholder="例: エチオピア">
+          </label>
+          <label>
+            農園
+            <input id="farm" name="farm" placeholder="例: チェルベサ農園">
+          </label>
+          <label>
+            プロセス
+            <input id="process" name="process" placeholder="例: ウォッシュト">
+          </label>
+          <label>
+            品種
+            <input id="variety" name="variety" placeholder="例: Heirloom">
+          </label>
+          <label>
+            エリア
+            <input id="area" name="area" placeholder="例: ゲデオ">
+          </label>
+          <label>
+            標高
+            <input id="altitude" name="altitude" placeholder="例: 1,900-2,100m">
+          </label>
+          <label>
+            生産者
+            <input id="producer" name="producer" placeholder="例: 小規模生産者">
+          </label>
+          <label>
+            収穫年度
+            <input id="harvestYear" name="harvestYear" placeholder="例: 2025/26">
+          </label>
+          <label>
+            輸入業者
+            <input id="importer" name="importer" placeholder="例: Nordic Approach">
+          </label>
+          <label>
+            購入店
+            <input id="shop" name="shop" placeholder="例: Bean Archive Roasters">
+          </label>
+          <label>
+            購入価格
+            <input id="price" name="price" placeholder="例: 1,800円 / 100g">
+          </label>
+          <label>
+            購入日
+            <input id="purchaseDate" name="purchaseDate" type="date">
+          </label>
+          <label>
+            焙煎日
+            <input id="roastDate" name="roastDate" type="date">
+          </label>
+          <label>
+            焙煎度
+            <select id="roastLevel" name="roastLevel">
+              <option value="">未選択</option>
+              <option>浅煎り</option>
+              <option>中浅煎り</option>
+              <option>中煎り</option>
+              <option>中深煎り</option>
+              <option>深煎り</option>
+            </select>
+          </label>
+          <label>
+            フレーバータグ
+            <input id="flavorTags" name="flavorTags" placeholder="例: ベリー, 紅茶, 花">
+          </label>
+        </div>
+
+        <label>
+          おすすめレシピ
+          <textarea id="recipe" name="recipe" rows="3" placeholder="例: 15g / 240ml / 92℃ / 2:30"></textarea>
+        </label>
+        <label>
+          カッピング
+          <textarea id="cupping" name="cupping" rows="3" placeholder="香り、酸、甘さ、余韻など"></textarea>
+        </label>
+        <label>
+          メモ
+          <textarea id="memo" name="memo" rows="3" placeholder="抽出メモや飲んだ印象"></textarea>
+        </label>
+
+        <div class="dialog-actions">
+          <button class="secondary-button" id="cancelButton" type="button">キャンセル</button>
+          <button class="primary-button" type="submit">保存</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="js/storage.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
