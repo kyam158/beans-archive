@@ -39,6 +39,10 @@ button {
   cursor: pointer;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 .app-header {
   display: flex;
   align-items: flex-end;
@@ -182,15 +186,27 @@ textarea {
 
 .bean-card {
   display: grid;
-  gap: 14px;
-  min-height: 280px;
+  align-content: start;
+  gap: 12px;
+  min-height: 250px;
   padding: 14px;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.bean-card:hover,
+.bean-card:focus-visible {
+  border-color: rgba(73, 101, 86, 0.32);
+  box-shadow: 0 18px 44px rgba(55, 45, 35, 0.13);
+  transform: translateY(-2px);
+  outline: none;
 }
 
 .bean-photo {
   display: flex;
   align-items: flex-end;
-  min-height: 132px;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
   border-radius: var(--radius);
   background:
     linear-gradient(135deg, rgba(73, 101, 86, 0.88), rgba(178, 134, 85, 0.78)),
@@ -199,15 +215,29 @@ textarea {
   padding: 14px;
 }
 
+.bean-photo.has-image,
+.detail-image-inner.has-image {
+  padding: 0;
+}
+
+.bean-photo img,
+.detail-image-inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .bean-photo span {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  font-size: 1.35rem;
+  width: 100%;
+  min-height: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.16);
+  font-size: 0.9rem;
+  font-weight: 800;
 }
 
 .bean-card h3 {
@@ -298,6 +328,115 @@ textarea {
   line-height: 1.8;
 }
 
+.text-button {
+  min-height: 38px;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--accent);
+  font-weight: 800;
+  padding: 0;
+}
+
+.detail-view {
+  padding-top: 4px;
+}
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr);
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.detail-image {
+  min-height: 420px;
+}
+
+.detail-image-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 420px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(135deg, rgba(73, 101, 86, 0.88), rgba(178, 134, 85, 0.72)),
+    linear-gradient(45deg, #ded1bf, #faf4ea);
+  color: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow);
+}
+
+.detail-image-inner span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% - 32px);
+  min-height: 388px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.12);
+  font-size: clamp(1.3rem, 4vw, 2.6rem);
+  font-weight: 850;
+}
+
+.detail-content {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: 0 12px 34px rgba(55, 45, 35, 0.09);
+  padding: clamp(18px, 3vw, 28px);
+}
+
+.detail-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 18px;
+}
+
+.detail-title-row h2 {
+  margin-bottom: 0;
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  line-height: 1.08;
+}
+
+.detail-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.detail-list {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr);
+  gap: 0;
+  margin: 0;
+}
+
+.detail-list dt,
+.detail-list dd {
+  border-bottom: 1px solid var(--line);
+  margin: 0;
+  padding: 14px 0;
+  line-height: 1.7;
+}
+
+.detail-list dt {
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.detail-list dd {
+  color: var(--ink);
+  white-space: pre-wrap;
+}
+
 .bean-dialog {
   width: min(920px, calc(100% - 24px));
   max-height: min(88vh, 920px);
@@ -380,5 +519,41 @@ label {
 
   .bean-dialog form {
     padding: 18px;
+  }
+
+  .detail-layout {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .detail-image,
+  .detail-image-inner {
+    min-height: 260px;
+  }
+
+  .detail-image-inner span {
+    min-height: 228px;
+  }
+
+  .detail-title-row,
+  .detail-actions {
+    display: grid;
+  }
+
+  .detail-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .detail-list {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-list dt {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .detail-list dd {
+    padding-top: 4px;
   }
 }

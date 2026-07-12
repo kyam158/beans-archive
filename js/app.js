@@ -5,9 +5,17 @@ const BeanApp = (() => {
     addButton: document.getElementById("addBeanButton"),
     cancelButton: document.getElementById("cancelButton"),
     closeDialogButton: document.getElementById("closeDialogButton"),
+    backButton: document.getElementById("backButton"),
+    detailDeleteButton: document.getElementById("detailDeleteButton"),
+    detailEditButton: document.getElementById("detailEditButton"),
+    detailImage: document.getElementById("detailImage"),
+    detailList: document.getElementById("detailList"),
+    detailName: document.getElementById("detailName"),
+    detailView: document.getElementById("detailView"),
     dialog: document.getElementById("beanDialog"),
     dialogTitle: document.getElementById("dialogTitle"),
     form: document.getElementById("beanForm"),
+    homeView: document.getElementById("homeView"),
     list: document.getElementById("beanList"),
     resultCount: document.getElementById("resultCount"),
     searchInput: document.getElementById("searchInput")
@@ -16,6 +24,7 @@ const BeanApp = (() => {
   function getSearchText(bean) {
     return [
       bean.name,
+      bean.imageUrl,
       bean.country,
       bean.farm,
       bean.process,
@@ -30,6 +39,7 @@ const BeanApp = (() => {
       bean.purchaseDate,
       bean.roastDate,
       bean.roastLevel,
+      bean.roasterMachine,
       bean.recipe,
       ...(bean.flavorTags || []),
       bean.cupping,
@@ -57,12 +67,49 @@ const BeanApp = (() => {
       elements.list,
       filtered,
       {
-        onEdit: openEditDialog,
-        onDelete: deleteBean
+        onOpen: openDetail
       },
       Boolean(elements.searchInput.value.trim())
     );
     elements.resultCount.textContent = `${filtered.length}件`;
+  }
+
+  function getCurrentDetailId() {
+    const match = window.location.hash.match(/^#bean\/(.+)$/);
+    return match ? decodeURIComponent(match[1]) : "";
+  }
+
+  function showHome() {
+    elements.homeView.hidden = false;
+    elements.detailView.hidden = true;
+  }
+
+  function showDetail(id) {
+    const bean = beans.find((item) => item.id === id);
+    if (!bean) {
+      window.location.hash = "#home";
+      return;
+    }
+
+    elements.homeView.hidden = true;
+    elements.detailView.hidden = false;
+    elements.detailEditButton.dataset.beanId = id;
+    elements.detailDeleteButton.dataset.beanId = id;
+    BeanUI.renderDetail(bean, elements);
+  }
+
+  function renderRoute() {
+    const detailId = getCurrentDetailId();
+    if (detailId) {
+      showDetail(detailId);
+      return;
+    }
+
+    showHome();
+  }
+
+  function openDetail(id) {
+    window.location.hash = `#bean/${encodeURIComponent(id)}`;
   }
 
   function openCreateDialog() {
@@ -113,6 +160,7 @@ const BeanApp = (() => {
     persist();
     closeDialog();
     render();
+    renderRoute();
   }
 
   function deleteBean(id) {
@@ -124,15 +172,28 @@ const BeanApp = (() => {
 
     beans = beans.filter((item) => item.id !== id);
     persist();
+    if (getCurrentDetailId() === id) {
+      window.location.hash = "#home";
+    }
     render();
   }
 
   function bindEvents() {
     elements.addButton.addEventListener("click", openCreateDialog);
+    elements.backButton.addEventListener("click", () => {
+      window.location.hash = "#home";
+    });
     elements.cancelButton.addEventListener("click", closeDialog);
     elements.closeDialogButton.addEventListener("click", closeDialog);
+    elements.detailEditButton.addEventListener("click", () => {
+      openEditDialog(elements.detailEditButton.dataset.beanId);
+    });
+    elements.detailDeleteButton.addEventListener("click", () => {
+      deleteBean(elements.detailDeleteButton.dataset.beanId);
+    });
     elements.form.addEventListener("submit", upsertBean);
     elements.searchInput.addEventListener("input", render);
+    window.addEventListener("hashchange", renderRoute);
 
     elements.dialog.addEventListener("click", (event) => {
       if (event.target === elements.dialog) {
@@ -145,6 +206,7 @@ const BeanApp = (() => {
     bindEvents();
     persist();
     render();
+    renderRoute();
   }
 
   return {

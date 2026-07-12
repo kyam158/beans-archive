@@ -16,6 +16,7 @@ const BeanStorage = (() => {
     return {
       id: bean.id || createId(),
       name: bean.name || "",
+      imageUrl: bean.imageUrl || "",
       country: bean.country || "",
       farm: bean.farm || "",
       process: bean.process || "",
@@ -30,6 +31,7 @@ const BeanStorage = (() => {
       purchaseDate: bean.purchaseDate || "",
       roastDate: bean.roastDate || "",
       roastLevel: bean.roastLevel || "",
+      roasterMachine: bean.roasterMachine || "",
       recipe: bean.recipe || "",
       flavorTags: Array.isArray(bean.flavorTags)
         ? bean.flavorTags

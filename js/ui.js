@@ -1,6 +1,7 @@
 const BeanUI = (() => {
   const fields = [
     "name",
+    "imageUrl",
     "country",
     "farm",
     "process",
@@ -15,6 +16,7 @@ const BeanUI = (() => {
     "purchaseDate",
     "roastDate",
     "roastLevel",
+    "roasterMachine",
     "recipe",
     "cupping",
     "memo"
@@ -27,15 +29,38 @@ const BeanUI = (() => {
     variety: "品種",
     area: "エリア",
     altitude: "標高",
-    producer: "生産者",
     harvestYear: "収穫年度",
     importer: "輸入業者",
     shop: "購入店",
     price: "購入価格",
     purchaseDate: "購入日",
     roastDate: "焙煎日",
-    roastLevel: "焙煎度"
+    roastLevel: "焙煎度",
+    roasterMachine: "焙煎機",
+    flavorTags: "フレーバー",
+    recipe: "レシピ",
+    memo: "メモ"
   };
+
+  const detailOrder = [
+    "country",
+    "farm",
+    "process",
+    "variety",
+    "area",
+    "altitude",
+    "harvestYear",
+    "importer",
+    "shop",
+    "price",
+    "purchaseDate",
+    "roastDate",
+    "roastLevel",
+    "roasterMachine",
+    "flavorTags",
+    "recipe",
+    "memo"
+  ];
 
   function setText(element, value) {
     element.textContent = value || "";
@@ -60,31 +85,39 @@ const BeanUI = (() => {
     return list;
   }
 
-  function createDetailList(bean) {
-    const list = document.createElement("div");
-    list.className = "bean-detail-list";
-
-    Object.entries(labels).forEach(([key, label]) => {
-      const value = key.includes("Date") ? formatDate(bean[key]) : bean[key];
-      if (!value) return;
-
-      const row = document.createElement("div");
-      setText(row, `${label}: ${value}`);
-      list.appendChild(row);
-    });
-
-    return list;
+  function getDisplayValue(bean, key) {
+    if (key === "flavorTags") return (bean.flavorTags || []).join(", ");
+    if (key.includes("Date")) return formatDate(bean[key]);
+    return bean[key] || "";
   }
 
-  function createCard(bean, onEdit, onDelete) {
+  function createImageArea(bean, className) {
+    const area = document.createElement("div");
+    area.className = className;
+
+    if (bean.imageUrl) {
+      area.classList.add("has-image");
+      const image = document.createElement("img");
+      image.src = bean.imageUrl;
+      image.alt = bean.name || "コーヒー豆の画像";
+      area.appendChild(image);
+      return area;
+    }
+
+    const fallback = document.createElement("span");
+    setText(fallback, "Bean Archive");
+    area.appendChild(fallback);
+    return area;
+  }
+
+  function createCard(bean, onOpen) {
     const card = document.createElement("article");
     card.className = "bean-card";
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
+    card.setAttribute("aria-label", `${bean.name || "名称未設定の豆"}の詳細を開く`);
 
-    const photo = document.createElement("div");
-    photo.className = "bean-photo";
-    const icon = document.createElement("span");
-    setText(icon, "豆");
-    photo.appendChild(icon);
+    const photo = createImageArea(bean, "bean-photo");
 
     const body = document.createElement("div");
     const title = document.createElement("h3");
@@ -97,26 +130,17 @@ const BeanUI = (() => {
 
     body.append(title, meta);
 
-    const detailList = createDetailList(bean);
     const tagList = createTagList(bean.flavorTags || []);
 
-    const actions = document.createElement("div");
-    actions.className = "card-actions";
+    card.addEventListener("click", () => onOpen(bean.id));
+    card.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        onOpen(bean.id);
+      }
+    });
 
-    const editButton = document.createElement("button");
-    editButton.className = "secondary-button";
-    editButton.type = "button";
-    setText(editButton, "編集");
-    editButton.addEventListener("click", () => onEdit(bean.id));
-
-    const deleteButton = document.createElement("button");
-    deleteButton.className = "danger-button";
-    deleteButton.type = "button";
-    setText(deleteButton, "削除");
-    deleteButton.addEventListener("click", () => onDelete(bean.id));
-
-    actions.append(editButton, deleteButton);
-    card.append(photo, body, detailList, tagList, actions);
+    card.append(photo, body, tagList);
 
     return card;
   }
@@ -149,8 +173,33 @@ const BeanUI = (() => {
     }
 
     beans.forEach((bean) => {
-      container.appendChild(createCard(bean, handlers.onEdit, handlers.onDelete));
+      container.appendChild(createCard(bean, handlers.onOpen));
     });
+  }
+
+  function renderDetail(bean, elements) {
+    setText(elements.detailName, bean.name || "名称未設定の豆");
+    elements.detailImage.replaceChildren(createImageArea(bean, "detail-image-inner"));
+    elements.detailList.replaceChildren();
+
+    detailOrder.forEach((key) => {
+      const value = getDisplayValue(bean, key);
+      if (!value) return;
+
+      const term = document.createElement("dt");
+      const description = document.createElement("dd");
+      setText(term, labels[key]);
+      setText(description, value);
+      elements.detailList.append(term, description);
+    });
+
+    if (!elements.detailList.children.length) {
+      const term = document.createElement("dt");
+      const description = document.createElement("dd");
+      setText(term, "詳細");
+      setText(description, "まだ詳細情報が登録されていません。");
+      elements.detailList.append(term, description);
+    }
   }
 
   function fillForm(form, bean) {
@@ -185,6 +234,7 @@ const BeanUI = (() => {
     fillForm,
     readForm,
     renderBeans,
+    renderDetail,
     updateSummary
   };
 })();

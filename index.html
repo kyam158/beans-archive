@@ -18,7 +18,8 @@
     </header>
 
     <main class="app-shell">
-      <section class="summary-panel" aria-label="アーカイブ概要">
+      <section class="home-view" id="homeView">
+        <section class="summary-panel" aria-label="アーカイブ概要">
         <div>
           <span class="summary-number" id="beanCount">0</span>
           <span class="summary-label">登録豆数</span>
@@ -33,19 +34,40 @@
         </div>
       </section>
 
-      <section class="controls" aria-label="検索">
+        <section class="controls" aria-label="検索">
         <label class="search-field" for="searchInput">
           <span>検索</span>
           <input id="searchInput" type="search" placeholder="豆名、国、農園、タグで検索">
         </label>
       </section>
 
-      <section>
+        <section>
         <div class="section-heading">
           <h2>コーヒー豆一覧</h2>
           <p id="resultCount">0件</p>
         </div>
         <div class="bean-grid" id="beanList"></div>
+      </section>
+      </section>
+
+      <section class="detail-view" id="detailView" hidden>
+        <button class="text-button" id="backButton" type="button">一覧へ戻る</button>
+        <article class="detail-layout">
+          <div class="detail-image" id="detailImage"></div>
+          <div class="detail-content">
+            <div class="detail-title-row">
+              <div>
+                <p class="eyebrow">Bean Detail</p>
+                <h2 id="detailName">名称未設定の豆</h2>
+              </div>
+              <div class="detail-actions">
+                <button class="secondary-button" id="detailEditButton" type="button">編集</button>
+                <button class="danger-button" id="detailDeleteButton" type="button">削除</button>
+              </div>
+            </div>
+            <dl class="detail-list" id="detailList"></dl>
+          </div>
+        </article>
       </section>
     </main>
 
@@ -65,6 +87,10 @@
           <label>
             豆名
             <input id="name" name="name" required placeholder="例: エチオピア イルガチェフェ">
+          </label>
+          <label>
+            画像URL / パス
+            <input id="imageUrl" name="imageUrl" placeholder="例: assets/images/coffee.jpg">
           </label>
           <label>
             国
@@ -128,6 +154,10 @@
               <option>中深煎り</option>
               <option>深煎り</option>
             </select>
+          </label>
+          <label>
+            焙煎機
+            <input id="roasterMachine" name="roasterMachine" placeholder="例: Probat">
           </label>
           <label>
             フレーバータグ
