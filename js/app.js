@@ -195,6 +195,17 @@ const BeanApp = (() => {
     elements.searchInput.addEventListener("input", render);
     window.addEventListener("hashchange", renderRoute);
 
+    elements.form.addEventListener("focusin", (event) => {
+      if (!event.target.matches("input, textarea, select")) return;
+
+      window.setTimeout(() => {
+        event.target.scrollIntoView({
+          block: "center",
+          behavior: "smooth"
+        });
+      }, 180);
+    });
+
     elements.dialog.addEventListener("click", (event) => {
       if (event.target === elements.dialog) {
         closeDialog();

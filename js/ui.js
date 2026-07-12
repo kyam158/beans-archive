@@ -29,6 +29,7 @@ const BeanUI = (() => {
     variety: "品種",
     area: "エリア",
     altitude: "標高",
+    producer: "生産者",
     harvestYear: "収穫年度",
     importer: "輸入業者",
     shop: "購入店",
@@ -37,7 +38,8 @@ const BeanUI = (() => {
     roastDate: "焙煎日",
     roastLevel: "焙煎度",
     roasterMachine: "焙煎機",
-    flavorTags: "フレーバー",
+    flavorTags: "フレーバータグ",
+    cupping: "カッピング",
     recipe: "レシピ",
     memo: "メモ"
   };
@@ -50,15 +52,15 @@ const BeanUI = (() => {
     "area",
     "altitude",
     "harvestYear",
+    "producer",
     "importer",
     "shop",
     "price",
     "purchaseDate",
     "roastDate",
     "roastLevel",
-    "roasterMachine",
     "flavorTags",
-    "recipe",
+    "cupping",
     "memo"
   ];
 
