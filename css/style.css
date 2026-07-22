@@ -5,6 +5,7 @@
   --surface-strong: #ffffff;
   --ink: #252320;
   --muted: #746d64;
+  --label: #9a958f;
   --line: rgba(60, 50, 40, 0.14);
   --accent: #496556;
   --accent-dark: #30493e;
@@ -134,15 +135,15 @@ input,
 select,
 textarea {
   width: 100%;
-  min-height: 46px;
+  min-height: 48px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 255, 255, 0.88);
   color: var(--ink);
   font-size: 16px;
   line-height: 1.35;
   outline: none;
-  padding: 12px 14px;
+  padding: 12px 15px;
   scroll-margin: 140px;
   -webkit-text-size-adjust: 100%;
 }
@@ -502,15 +503,16 @@ textarea {
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  column-gap: 14px;
+  row-gap: 18px;
 }
 
 label {
   display: grid;
-  gap: 7px;
-  color: var(--muted);
+  gap: 10px;
+  color: var(--label);
   font-size: 0.86rem;
-  font-weight: 700;
+  font-weight: 650;
 }
 
 .dialog-actions {
@@ -525,6 +527,12 @@ label {
   backdrop-filter: blur(18px);
 }
 
+@media (max-width: 860px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 760px) {
   .app-header {
     display: grid;
@@ -536,10 +544,6 @@ label {
   }
 
   .summary-panel {
-    grid-template-columns: 1fr;
-  }
-
-  .form-grid {
     grid-template-columns: 1fr;
   }
 
